@@ -13,4 +13,12 @@
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+  transition: opacity 0.5s linear;
+}
+
+.userForm__submit:hover {
+  border-radius: 2px;
+  opacity: 0.85;
+  background: #fff;
+  cursor: pointer;
 }

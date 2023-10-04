@@ -14,7 +14,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
 import ProtectedRouteElement from "./ProtectedRoute";
-import * as auth from "./Auth";
+import * as auth from "../contexts/Auth";
 import InfoTooltip from "./InfoTooltip";
 import { useNavigate } from "react-router-dom";
 

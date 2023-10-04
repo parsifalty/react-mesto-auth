@@ -9,4 +9,9 @@
   border: 0;
   background-color: transparent;
   cursor: pointer;
+  transition: opacity 0.5s linear;
+}
+
+.header__button:hover {
+  opacity: 0.6;
 }
