@@ -14,7 +14,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Register from "./Register";
 import Login from "./Login";
 import ProtectedRouteElement from "./ProtectedRoute";
-import * as auth from "../contexts/Auth";
+import * as auth from "../utils/Auth";
 import InfoTooltip from "./InfoTooltip";
 import { useNavigate } from "react-router-dom";
 
@@ -25,7 +25,8 @@ function App() {
 
   const [isInfoTooltip, setInfoToolTipPopup] = React.useState(false);
 
-  const [isSuccess, setSuccess] = React.useState(false);
+  const [isSuccessInfoTooltipStatus, setSuccessInfoTooltipStatus] =
+    React.useState(false);
 
   const [loggedIn, setLoggedIn] = React.useState(false);
 
@@ -43,7 +44,7 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
     React.useState(false);
 
-  const [deleteConfirm, setDeleteConfirm] = React.useState(null);
+  const [cardToDelete, setCardToDelete] = React.useState(null);
 
   function handleToolTipOpen() {
     setInfoToolTipPopup(true);
@@ -64,7 +65,7 @@ function App() {
   }
 
   function handleDeleteCard(card) {
-    setDeleteConfirm(card);
+    setCardToDelete(card);
   }
 
   function closeAllPopups() {
@@ -72,7 +73,7 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setSelectedCard(null);
-    setDeleteConfirm(null);
+    setCardToDelete(null);
     setInfoToolTipPopup(false);
   }
 
@@ -80,15 +81,20 @@ function App() {
     const jwt = localStorage.getItem("jwt");
 
     if (jwt) {
-      auth.tokenToBeChecked(jwt).then((data) => {
-        if (data) {
-          console.log(data);
-          setUserEmail({ email: data.data.email });
-          console.log(userEmail);
-          setLoggedIn(true);
-          navigate("/");
-        }
-      });
+      auth
+        .checkToken(jwt)
+        .then((data) => {
+          if (data) {
+            console.log(data);
+            setUserEmail({ email: data.data.email });
+            console.log(userEmail);
+            setLoggedIn(true);
+            navigate("/");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }, []);
 
@@ -96,13 +102,13 @@ function App() {
     auth
       .register(email, password)
       .then((res) => {
-        setSuccess(true);
+        setSuccessInfoTooltipStatus(true);
         handleToolTipOpen();
         navigate("/login");
       })
       .catch((err) => {
         console.error(err);
-        setSuccess(false);
+        setSuccessInfoTooltipStatus(false);
         handleToolTipOpen();
       });
   }
@@ -113,33 +119,37 @@ function App() {
       .then((res) => {
         localStorage.setItem("jwt", res.token);
         setLoggedIn(true);
-        setSuccess(true);
+        setSuccessInfoTooltipStatus(true);
         setUserEmail({ email: email });
-        console.log(isSuccess);
         navigate("/");
-      })
-      .then(() => {
         handleToolTipOpen();
       })
       .catch((err) => {
         console.error(err);
-        setSuccess(false);
+        setSuccessInfoTooltipStatus(false);
         handleToolTipOpen();
       });
   }
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-    api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
-      setCards((state) => state.map((c) => (c._id === card._id ? newCard : c)));
-    });
+    api
+      .changeLikeCardStatus(card._id, !isLiked)
+      .then((newCard) => {
+        setCards((state) =>
+          state.map((c) => (c._id === card._id ? newCard : c))
+        );
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   function handleCardDelete(id) {
     api
       .deleteCard(id)
       .then((card) => {
-        setCards(() => cards.filter((c) => c._id !== id));
+        setCards((cards) => cards.filter((c) => c._id !== id));
         closeAllPopups();
       })
       .catch((err) => console.error(err));
@@ -163,7 +173,7 @@ function App() {
 
   function handleAvatarUserForm(avatar) {
     api
-      .addNewAvatar(avatar)
+      .setNewAvatar(avatar)
       .then((res) => {
         setCurrentUser(res);
         closeAllPopups();
@@ -189,21 +199,17 @@ function App() {
         console.log(loggedIn);
       })
       .catch((err) => console.error(err));
-  }, []);
+  }, [loggedIn ? true : false]);
   console.log(currentUser);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="App">
-        {loggedIn ? (
-          <Header
-            email={userEmail.email}
-            SignOut={handleSignOut}
-            loggedIn={loggedIn}
-          />
-        ) : (
-          ""
-        )}
+        <Header
+          email={userEmail.email}
+          signOut={handleSignOut}
+          loggedIn={loggedIn}
+        />
         <Routes>
           <Route
             path="/"
@@ -226,6 +232,7 @@ function App() {
             element={<Register onSubmit={registerSubmit} />}
           />
           <Route path="/login" element={<Login onSubmit={loginSubmit} />} />
+          <Route path="/*" element={<Navigate to="/login" replace />} />
         </Routes>
         {loggedIn ? <Footer /> : ""}
         <EditProfilePopup
@@ -246,13 +253,13 @@ function App() {
         <ImagePopup onClose={closeAllPopups} card={selectedCard} />
         <DeletePopup
           onClose={closeAllPopups}
-          card={deleteConfirm}
+          card={cardToDelete}
           onDelete={handleCardDelete}
         />
         <InfoTooltip
           isOpen={isInfoTooltip}
           onClose={closeAllPopups}
-          isSuccess={isSuccess}
+          isSuccess={isSuccessInfoTooltipStatus}
         />
       </div>
     </CurrentUserContext.Provider>

@@ -21,7 +21,6 @@ export default function Register(props) {
 
   return (
     <>
-      <Header text={"Вход"} path={"/login"} />
       <UserForm
         title={"Регистрация"}
         button={"Зарегестрироваться"}
@@ -45,7 +44,7 @@ export default function Register(props) {
           className="userForm__input userForm__input_type_password"
           id="password"
           name="password"
-          type="text"
+          type="password"
           placeholder="Пароль"
           required
           minLength="2"

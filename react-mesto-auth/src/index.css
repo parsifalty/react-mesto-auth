@@ -65,4 +65,5 @@
 @import url(./blocks/header/__email/header__email.css);
 @import url(./blocks/popup/__tooltip/_image/popup__tooltip_image.css);
 @import url(./blocks/popup/__tooltip/_text/popup__tooltip_text.css);
+@import url(./blocks/popup/__container/_type_delete/popup__container_type_delete.css);
 @import url(./blocks/popup/__container/_type-infoToolTip/popup__container_type-infoToolTip.css);

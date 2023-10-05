@@ -55,20 +55,13 @@ class Api {
   }
 
   changeLikeCardStatus(cardId, isLiked) {
-    if (isLiked) {
-      return fetch(`${this._link}/cards/${cardId}/likes`, {
-        method: "PUT",
-        headers: this._headers,
-      }).then(this._checkResponse);
-    } else {
-      return fetch(`${this._link}/cards/${cardId}/likes`, {
-        method: "DELETE",
-        headers: this._headers,
-      }).then(this._checkResponse);
-    }
+    return fetch(`${this._link}/cards/${cardId}/likes`, {
+      method: isLiked ? "PUT" : "DELETE",
+      headers: this._headers,
+    }).then(this._checkResponse);
   }
 
-  addNewAvatar(data) {
+  setNewAvatar(data) {
     return fetch(`${this._link}/users/me/avatar`, {
       method: "PATCH",
       headers: this._headers,

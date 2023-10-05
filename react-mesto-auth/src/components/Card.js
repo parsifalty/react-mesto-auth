@@ -1,29 +1,28 @@
 import React from "react";
 import CurrentUserContext from "../contexts/CurrentUserContext";
 
-function Card(card) {
-  const UserContext = React.useContext(CurrentUserContext);
-  const isOwn = card.owner._id === UserContext._id;
-  const cardId = card._id;
-  const isLiked = card.likes.some((i) => i._id === UserContext._id);
+function Card(props) {
+  const userContext = React.useContext(CurrentUserContext);
+  const isOwn = props.card.owner._id === userContext._id;
+  const isLiked = props.card.likes.some((i) => i._id === userContext._id);
   function handleClick() {
-    card.onCardClick(card);
+    props.onCardClick(props.card);
   }
   function handleLike() {
-    card.onCardLike(card);
+    props.onCardLike(props.card);
   }
 
   function handleDeleteCard() {
-    card.onDelete(card);
+    props.onDelete(props.card);
   }
 
   return (
     <article className="grid-net__item">
       <div className="grid-net__item-image-box">
         <img
-          src={card.link}
+          src={props.card.link}
           className="grid-net__item-image"
-          alt={card.name}
+          alt={props.card.name}
           onClick={handleClick}
         />
       </div>
@@ -35,7 +34,7 @@ function Card(card) {
         ></button>
       )}
       <div className="grid-net__item-box">
-        <h2 className="grid-net__item-title">{card.name}</h2>
+        <h2 className="grid-net__item-title">{props.card.name}</h2>
         <div className="grid-net__item-user-box">
           <button
             className={`grid-net__item-button ${
@@ -43,7 +42,9 @@ function Card(card) {
             }`}
             onClick={handleLike}
           ></button>
-          <span className="grid-net__item-number">{card.likes.length}</span>
+          <span className="grid-net__item-number">
+            {props.card.likes.length}
+          </span>
         </div>
       </div>
     </article>

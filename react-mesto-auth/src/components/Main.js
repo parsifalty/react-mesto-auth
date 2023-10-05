@@ -40,6 +40,7 @@ function Main(props) {
       <section className="grid-net" aria-label="грид-сетка">
         {props.cards.map((item, i) => (
           <Card
+            card={item}
             onDelete={props.onDelete}
             onCardLike={props.onCardLike}
             key={item._id}
