@@ -2,7 +2,8 @@ import React from "react";
 import PopupWithForm from "./PopupWithForm";
 
 export default function DeletePopup(props) {
-  function handleDelete() {
+  function handleSubmit(e) {
+    e.preventDefault();
     props.onDelete(props.card._id);
   }
 
@@ -14,9 +15,9 @@ export default function DeletePopup(props) {
       button={"Да"}
       container={"delete"}
       onClose={props.onClose}
-      onDelete={handleDelete}
       buttonConfirm={"confirm"}
       popupTitle={"_delete-card"}
+      onSubmit={handleSubmit}
       delete
     />
   );

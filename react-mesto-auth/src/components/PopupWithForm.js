@@ -24,29 +24,19 @@ function PopupWithForm(props) {
           type="button"
           onClick={props.onClose}
         ></button>
-        {props.delete ? (
+        <form
+          className={`popup__form popup__form_type${props.name}`}
+          onSubmit={props.onSubmit}
+        >
+          {props.children}
           <button
             className={`popup__submit popup__submit_type-${props.buttonConfirm}}`}
-            type="button"
-            onClick={props.delete ? props.onDelete : ""}
+            type="submit"
+            onClick={props.onSubmit}
           >
             {props.button}
           </button>
-        ) : (
-          <form
-            className={`popup__form popup__form_type${props.name}`}
-            onSubmit={props.onSubmit}
-          >
-            {props.children}
-            <button
-              className={`popup__submit popup__submit_type-${props.buttonConfirm}}`}
-              type="submit"
-              onClick={props.onSubmit}
-            >
-              {props.button}
-            </button>
-          </form>
-        )}
+        </form>
       </div>
     </div>
   );
