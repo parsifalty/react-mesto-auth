@@ -92,7 +92,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "http://api.mestokda.nomoredomainsmonster.ru",
+  baseUrl: "https://api.mestokda.nomoredomainsmonster.ru",
 });
 
 export default api;
