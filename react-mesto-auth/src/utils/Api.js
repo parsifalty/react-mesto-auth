@@ -11,24 +11,31 @@ class Api {
     return Promise.reject(`Error ${res.status} ${res.statusText}`);
   }
 
-  getInitialCards() {
+  getInitialCards(token) {
     return fetch(`${this._link}/cards`, {
       method: "GET",
-      headers: this._headers,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }).then(this._checkResponse);
   }
 
-  getUserFromServer() {
+  getUserFromServer(token) {
     return fetch(`${this._link}/users/me`, {
       method: "GET",
-      headers: this._headers,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     }).then(this._checkResponse);
   }
 
-  setNewUserInfo(data) {
+  setNewUserInfo(data, token) {
     return fetch(`${this._link}/users/me`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         name: data.name,
         about: data.about,
@@ -36,17 +43,23 @@ class Api {
     }).then(this._checkResponse);
   }
 
-  deleteCard(cardId) {
+  deleteCard(cardId, token) {
     return fetch(`${this._link}/cards/${cardId}`, {
       method: "DELETE",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     }).then(this._checkResponse);
   }
 
-  addCard(data) {
+  addCard(data, token) {
     return fetch(`${this._link}/cards`, {
       method: "POST",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         name: data.name,
         link: data.link,
@@ -54,17 +67,23 @@ class Api {
     }).then(this._checkResponse);
   }
 
-  changeLikeCardStatus(cardId, isLiked) {
+  changeLikeCardStatus(cardId, isLiked, token) {
     return fetch(`${this._link}/cards/${cardId}/likes`, {
       method: isLiked ? "PUT" : "DELETE",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     }).then(this._checkResponse);
   }
 
-  setNewAvatar(data) {
+  setNewAvatar(data, token) {
     return fetch(`${this._link}/users/me/avatar`, {
       method: "PATCH",
-      headers: this._headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify({
         avatar: data.avatar,
       }),
@@ -73,11 +92,7 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: "https://mesto.nomoreparties.co/v1/cohort-72",
-  headers: {
-    authorization: "ee9de7f6-7aed-4e20-b5bf-f52e55007fe4",
-    "Content-type": "application/json",
-  },
+  baseUrl: "http://api.mestokda.nomoredomainsmonster.ru",
 });
 
 export default api;

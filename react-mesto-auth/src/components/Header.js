@@ -8,17 +8,17 @@ function Header(props) {
       <img src={logo} className="header__logo" alt="логотип" />
       <Routes>
         <Route
-          path={"/login"}
+          path={"/singin"}
           element={
-            <Link className="header__link" to={"/register"}>
+            <Link className="header__link" to={"/signup"}>
               Регистрация
             </Link>
           }
         />
         <Route
-          path={"/register"}
+          path={"/signup"}
           element={
-            <Link className="header__link" to={"/login"}>
+            <Link className="header__link" to={"/singin"}>
               Войти
             </Link>
           }

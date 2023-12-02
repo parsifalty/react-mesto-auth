@@ -24,7 +24,7 @@ export default function Login(props) {
       <UserForm
         title={"Вход"}
         button={"Войти"}
-        path={"/register"}
+        path={"/signup"}
         onSubmit={HandleSubmit}
       >
         <input

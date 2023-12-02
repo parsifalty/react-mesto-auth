@@ -1,4 +1,4 @@
-const BASE_URL = "https://auth.nomoreparties.co";
+const BASE_URL = "http://api.mestokda.nomoredomainsmonster.ru";
 
 function checkResponse(res) {
   if (res.ok) {
@@ -21,7 +21,7 @@ export const register = (email, password) => {
 };
 
 export const login = (email, password) => {
-  return fetch(`${BASE_URL}/signin`, {
+  return fetch(`${BASE_URL}/singin`, {
     method: "POST",
     headers: {
       Accept: "application/json",

@@ -24,7 +24,7 @@ export default function Register(props) {
       <UserForm
         title={"Регистрация"}
         button={"Зарегестрироваться"}
-        path={"/login"}
+        path={"/singin"}
         onSubmit={HandleSubmit}
         register
       >

@@ -76,6 +76,23 @@ function App() {
     setCardToDelete(null);
     setInfoToolTipPopup(false);
   }
+  console.log(localStorage.jwt);
+
+  React.useEffect(() => {
+    if (!loggedIn) return;
+    Promise.all([
+      api.getUserFromServer(localStorage.jwt),
+      api.getInitialCards(localStorage.jwt),
+    ])
+      .then(([user, cardsList]) => {
+        setCurrentUser(user);
+        setCards(cardsList);
+        console.log(loggedIn);
+        console.log(user);
+      })
+
+      .catch((err) => console.error(err));
+  }, [loggedIn]);
 
   React.useEffect(() => {
     const jwt = localStorage.getItem("jwt");
@@ -98,13 +115,15 @@ function App() {
     }
   }, []);
 
+  console.log(currentUser);
+
   function registerSubmit(email, password) {
     auth
       .register(email, password)
       .then((res) => {
         setSuccessInfoTooltipStatus(true);
         handleToolTipOpen();
-        navigate("/login");
+        navigate("/singin");
       })
       .catch((err) => {
         console.error(err);
@@ -132,9 +151,9 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
     api
-      .changeLikeCardStatus(card._id, !isLiked)
+      .changeLikeCardStatus(card._id, !isLiked, localStorage.jwt)
       .then((newCard) => {
         setCards((state) =>
           state.map((c) => (c._id === card._id ? newCard : c))
@@ -147,7 +166,7 @@ function App() {
 
   function handleCardDelete(id) {
     api
-      .deleteCard(id)
+      .deleteCard(id, localStorage.jwt)
       .then((card) => {
         setCards((cards) => cards.filter((c) => c._id !== id));
         closeAllPopups();
@@ -157,7 +176,7 @@ function App() {
 
   function handleSubmitUserForm(obj) {
     api
-      .setNewUserInfo(obj)
+      .setNewUserInfo(obj, localStorage.jwt)
       .then((res) => {
         setCurrentUser(res);
         closeAllPopups();
@@ -167,13 +186,13 @@ function App() {
 
   function handleSignOut() {
     localStorage.removeItem("jwt");
-    navigate("/login");
+    navigate("/singin");
     setLoggedIn(false);
   }
 
   function handleAvatarUserForm(avatar) {
     api
-      .setNewAvatar(avatar)
+      .setNewAvatar(avatar, localStorage.jwt)
       .then((res) => {
         setCurrentUser(res);
         closeAllPopups();
@@ -183,25 +202,13 @@ function App() {
 
   function handleAddPlaceSubmit(card) {
     api
-      .addCard(card)
+      .addCard(card, localStorage.jwt)
       .then((res) => {
         setCards([res, ...cards]);
         closeAllPopups();
       })
       .catch((err) => console.error(err));
   }
-
-  React.useEffect(() => {
-    if (!loggedIn) return;
-    Promise.all([api.getUserFromServer(), api.getInitialCards()])
-      .then(([user, cardsList]) => {
-        setCards(cardsList);
-        setCurrentUser(user);
-        console.log(loggedIn);
-      })
-
-      .catch((err) => console.error(err));
-  }, [loggedIn]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -229,11 +236,11 @@ function App() {
             }
           />
           <Route
-            path="/register"
+            path="/signup"
             element={<Register onSubmit={registerSubmit} />}
           />
-          <Route path="/login" element={<Login onSubmit={loginSubmit} />} />
-          <Route path="/*" element={<Navigate to="/login" replace />} />
+          <Route path="/singin" element={<Login onSubmit={loginSubmit} />} />
+          <Route path="/*" element={<Navigate to="/singin" replace />} />
         </Routes>
         {loggedIn ? <Footer /> : ""}
         <EditProfilePopup
