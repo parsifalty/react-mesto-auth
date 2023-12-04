@@ -79,6 +79,25 @@ function App() {
   console.log(localStorage.jwt);
 
   React.useEffect(() => {
+    const jwt = localStorage.jwt;
+    if (jwt) {
+      auth
+        .checkToken(jwt)
+        .then((data) => {
+          if (data) {
+            setUserEmail({ email: data.email });
+            console.log(userEmail);
+            setLoggedIn(true);
+            navigate("/");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, []);
+
+  React.useEffect(() => {
     if (!loggedIn) return;
     Promise.all([
       api.getUserFromServer(localStorage.jwt),
@@ -93,27 +112,6 @@ function App() {
 
       .catch((err) => console.error(err));
   }, [loggedIn]);
-
-  React.useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-
-    if (jwt) {
-      auth
-        .checkToken(jwt)
-        .then((data) => {
-          if (data) {
-            console.log(data);
-            setUserEmail({ email: data.data.email });
-            console.log(userEmail);
-            setLoggedIn(true);
-            navigate("/");
-          }
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
-  }, []);
 
   console.log(currentUser);
 
